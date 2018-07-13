@@ -8,6 +8,7 @@
 
 #include "settings.h"
 #include "security.h"
+#include "maglock.h"
 #include "game.h"
 #include "sm.h"
 #include "log.h"
@@ -98,6 +99,7 @@ static void on_game_won(GAME_DATA& data)
 {
 	pln("Team %d won!", data.team+1);
 	security_set_level(data.team, SECURITY_LEVEL_OFF);
+	maglock_control(data.team, true);
 }
 
 static void on_game_lost(GAME_DATA& data)

@@ -7,9 +7,11 @@
 /* Arduino Includes */
 
 #include <TaskAction.h>
+#include <Adafruit_NeoPixel.h>
 
 /* Local Includes */
 
+#include "settings.h"
 #include "combination.h"
 #include "game.h"
 #include "sm.h"
@@ -23,6 +25,45 @@ static const uint8_t COMBINATION_PINS[2][5] = {
 };
 
 /* Private Variables */
+
+static Adafruit_NeoPixel s_combination_pixels[2] = {
+	Adafruit_NeoPixel(50, 4, NEO_GRB + NEO_KHZ800),
+	Adafruit_NeoPixel(50, 5, NEO_GRB + NEO_KHZ800),
+};
+
+/* Private Functions */
+
+static void set_column_pixels(Adafruit_NeoPixel& pixels, uint8_t column, uint8_t n)
+{
+	bool column_is_odd = column & 1;
+	if (column_is_odd)
+	{
+		n = 9 - n;
+	}
+
+	bool set;
+	for (uint8_t i=0; i<10; i++)
+	{
+		set =  column_is_odd ? (i >= n) : (i <= n);
+		if (set)
+		{
+			pixels.setPixelColor((column*10)+i,
+				COMBINATION_DISPLAY_COLOUR[0], COMBINATION_DISPLAY_COLOUR[1], COMBINATION_DISPLAY_COLOUR[2]);
+		}
+	}
+}
+
+static void display_combination(uint8_t team, uint8_t * combination)
+{
+	Adafruit_NeoPixel& pixels = s_combination_pixels[team];
+
+	pixels.clear();
+	for (uint8_t col=0; col<5; col++)
+	{
+		set_column_pixels(pixels, col, combination[col]);
+	}
+	pixels.show();
+}
 
 static void combination_task_fn(TaskAction * task)
 {
@@ -38,13 +79,32 @@ static void combination_task_fn(TaskAction * task)
 			combination[adc] = adc_reading / 103;
 		}
 		game_set_combination(k, combination);
+		display_combination(k, combination);
 	}
 }
 static TaskAction s_combination_task(combination_task_fn, 100, INFINITE_TICKS);
 
+/* Public Functions */
+
 void combination_setup()
 {
+	s_combination_pixels[0].begin();
+	s_combination_pixels[1].begin();
 
+	s_combination_pixels[0].clear();
+	s_combination_pixels[1].clear();
+
+	for(uint8_t i=0; i<50; i++)
+	{
+		s_combination_pixels[0].setPixelColor(i,
+			COMBINATION_DISPLAY_COLOUR[0], COMBINATION_DISPLAY_COLOUR[1], COMBINATION_DISPLAY_COLOUR[2]);
+		s_combination_pixels[0].show();
+		s_combination_pixels[1].setPixelColor(i,
+			COMBINATION_DISPLAY_COLOUR[0], COMBINATION_DISPLAY_COLOUR[1], COMBINATION_DISPLAY_COLOUR[2]);
+		s_combination_pixels[1].show();
+		delay(20);
+	}
+	
 }
 
 void combination_tick()

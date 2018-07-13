@@ -19,5 +19,7 @@ static const uint8_t SECURITY_LEVEL_OFF_COLOUR[]	= {0, 0, 150};
 static const uint8_t SECURITY_LEVEL_LOW_COLOUR[]	= {0, 150, 0};
 static const uint8_t SECURITY_LEVEL_HIGH_COLOUR[]	= {150, 0, 0};
 
+// Combination display colours
+static const uint8_t COMBINATION_DISPLAY_COLOUR[] = {64, 64, 32};
 
 #endif

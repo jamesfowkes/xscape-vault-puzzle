@@ -27,7 +27,7 @@ static const uint8_t RELAY_PINS[2] = {8,9};
 static uint16_t s_timeouts[2];
 static Adafruit_NeoPixel s_security_pixels[2] = {
 	Adafruit_NeoPixel(NUMPIXELS, 2, NEO_GRB + NEO_KHZ800),
-	Adafruit_NeoPixel(NUMPIXELS, 4, NEO_GRB + NEO_KHZ800),
+	Adafruit_NeoPixel(NUMPIXELS, 3, NEO_GRB + NEO_KHZ800),
 };
 
 /* Private Functions */

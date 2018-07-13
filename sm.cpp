@@ -3,6 +3,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+/* Arduino Includes */
+
+#include "Arduino.h"
+
 /* Local Includes */
 
 #include "game.h"

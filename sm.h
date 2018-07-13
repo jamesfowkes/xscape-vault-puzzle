@@ -29,7 +29,7 @@ struct state_machine
 	GAME_STATE_ENUM current_state;
 	GAME_EVENT_ENUM events[MAX_EVENTS];
 	uint8_t n_events;
-	GAME_DATA * data;
+	GAME_DATA& data;
 	uint8_t count;
 };
 typedef struct state_machine STATE_MACHINE;

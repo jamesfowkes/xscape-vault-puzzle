@@ -1,5 +1,13 @@
+/* System Includes */
+
 #include <stdio.h>
 #include <stdarg.h>
+
+/* Arduino Includes */
+
+#include "Arduino.h"
+
+/* Local Includes */
 
 #include "log.h"
 

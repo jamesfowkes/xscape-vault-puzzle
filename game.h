@@ -35,6 +35,10 @@ struct game_data
 };
 typedef struct game_data GAME_DATA;
 
-typedef void (*SM_HANDLER)(GAME_DATA * data);
+typedef void (*SM_HANDLER)(GAME_DATA& data);
+
+void game_new_keypad_entry(uint8_t team, char key);
+void game_set_combination(uint8_t team, uint8_t * combination);
+void game_security_timeout_end(uint8_t team);
 
 #endif

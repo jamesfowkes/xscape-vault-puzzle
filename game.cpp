@@ -67,11 +67,35 @@ static STATE_MACHINE s_state_machines[] = {
 
 static void on_keypad_entry(GAME_DATA& data)
 {
+	bool match = true;
 	pln("Team %d got keypad entry %d, %d, %d, %d", data.team+1, data.keypad[0], data.keypad[1], data.keypad[2], data.keypad[3]);
-	if (data.team == TEAM1 && match_keypad_codes(data.keypad, TEAM1_SECURITY_ENABLE_CODE)) { sm_push_event(&s_state_machines[TEAM2], EVENT_ENABLE_SECURITY); }
-	if (data.team == TEAM2 && match_keypad_codes(data.keypad, TEAM2_SECURITY_ENABLE_CODE)) { sm_push_event(&s_state_machines[TEAM1], EVENT_ENABLE_SECURITY); }
-	if (data.team == TEAM1 && match_keypad_codes(data.keypad, TEAM1_SECURITY_DISABLE_CODE)) { sm_push_event(&s_state_machines[TEAM1], EVENT_DISABLE_SECURITY); }
-	if (data.team == TEAM2 && match_keypad_codes(data.keypad, TEAM2_SECURITY_DISABLE_CODE)) { sm_push_event(&s_state_machines[TEAM2], EVENT_DISABLE_SECURITY); }
+	if (data.team == TEAM1 && match_keypad_codes(data.keypad, TEAM1_SECURITY_ENABLE_CODE))
+	{
+		sm_push_event(&s_state_machines[TEAM2], EVENT_ENABLE_SECURITY);
+	}
+	else if (data.team == TEAM2 && match_keypad_codes(data.keypad, TEAM2_SECURITY_ENABLE_CODE))
+	{
+		sm_push_event(&s_state_machines[TEAM1], EVENT_ENABLE_SECURITY);
+	}
+	else if (data.team == TEAM1 && match_keypad_codes(data.keypad, TEAM1_SECURITY_DISABLE_CODE))
+	{
+		sm_push_event(&s_state_machines[TEAM1], EVENT_DISABLE_SECURITY);
+	}
+	else if (data.team == TEAM2 && match_keypad_codes(data.keypad, TEAM2_SECURITY_DISABLE_CODE))
+	{
+		sm_push_event(&s_state_machines[TEAM2], EVENT_DISABLE_SECURITY);
+	}
+	else
+	{
+		match = false;
+	}
+
+	if (match)
+	{
+		// Reset both keypad histories to force both teams to enter complete codes
+		memset(s_game_data[0].keypad, 0, 4);
+		memset(s_game_data[1].keypad, 0, 4);
+	}
 }
 
 static void on_combination_change(GAME_DATA& data)
@@ -111,6 +135,7 @@ static void on_game_lost(GAME_DATA& data)
 static void on_security_disabled(GAME_DATA& data)
 {
 	pln("Disabling security for team %d", data.team+1);
+	security_set_level(data.team, SECURITY_LEVEL_LOW);
 }
 
 static void game_state_keypad_update(GAME_DATA& data, char key)

@@ -58,6 +58,7 @@ static void security_task_fn(TaskAction* task)
 {
 	(void)task;
 
+	#ifdef ENABLE_SECURITY_TIMEOUTS
 	for(uint8_t k=0; k<2; k++)
 	{
 		if (s_timeouts[k])
@@ -70,6 +71,7 @@ static void security_task_fn(TaskAction* task)
 			}
 		}
 	}
+	#endif
 }
 static TaskAction s_security_task(security_task_fn, 1000, INFINITE_TICKS);
 

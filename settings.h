@@ -1,5 +1,5 @@
-#ifndef _CODES_H_
-#define _CODES_H_
+#ifndef _SETTINGS_H_
+#define _SETTINGS_H_
 
 // Keytpad codes for each team
 static const uint8_t TEAM1_SECURITY_ENABLE_CODE[] = {'1', '1', '1', '1'};

@@ -17,6 +17,7 @@
 void setup()
 {
 	Serial.begin(115200);
+	game_setup();
 	keypad_setup();
 	combination_setup();
 	security_setup();

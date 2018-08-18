@@ -16,8 +16,8 @@
 /* Private Data */
 
 static GAME_DATA s_game_data[2] = {
-	{0, {0,0,0,0}, {0,0,0,0,0}},
-	{1, {0,0,0,0}, {0,0,0,0,0}},
+	{TEAM1, {0,0,0,0}, {0,0,0,0,0}, false},
+	{TEAM2, {0,0,0,0}, {0,0,0,0,0}, false},
 };
 
 /* Private Functions */
@@ -65,17 +65,24 @@ static STATE_MACHINE s_state_machines[] = {
 
 /* State Machine Handler Functions */
 
+
 static void on_keypad_entry(GAME_DATA& data)
 {
 	bool match = true;
 	pln("Team %d got keypad entry %d, %d, %d, %d", data.team+1, data.keypad[0], data.keypad[1], data.keypad[2], data.keypad[3]);
 	if (data.team == TEAM1 && match_keypad_codes(data.keypad, TEAM1_SECURITY_ENABLE_CODE))
 	{
-		sm_push_event(&s_state_machines[TEAM2], EVENT_ENABLE_SECURITY);
+		if (!s_game_data[TEAM2].locked_out_once)
+		{
+			sm_push_event(&s_state_machines[TEAM2], EVENT_ENABLE_SECURITY);
+		}
 	}
 	else if (data.team == TEAM2 && match_keypad_codes(data.keypad, TEAM2_SECURITY_ENABLE_CODE))
 	{
-		sm_push_event(&s_state_machines[TEAM1], EVENT_ENABLE_SECURITY);
+		if (!s_game_data[TEAM1].locked_out_once)
+		{
+			sm_push_event(&s_state_machines[TEAM1], EVENT_ENABLE_SECURITY);
+		}
 	}
 	else if (data.team == TEAM1 && match_keypad_codes(data.keypad, TEAM1_SECURITY_DISABLE_CODE))
 	{
@@ -117,6 +124,7 @@ static void on_security_enabled(GAME_DATA& data)
 {
 	pln("Enabling security for team %d", data.team+1);
 	security_set_level(data.team, SECURITY_LEVEL_HIGH);
+	data.locked_out_once = true;
 }
 
 static void on_game_won(GAME_DATA& data)
@@ -154,6 +162,12 @@ static bool game_combination_update(GAME_DATA& data, uint8_t * combination)
 		memcpy(data.combination, combination, 5);
 	}
 	return !match;
+}
+
+void game_setup()
+{
+	s_game_data[TEAM1].locked_out_once = false;
+	s_game_data[TEAM2].locked_out_once = false;
 }
 
 void game_new_keypad_entry(uint8_t team, char key)
@@ -204,7 +218,6 @@ static void reset_game()
 	s_state_machines[TEAM1].current_state = STATE_NORMAL;
 	s_state_machines[TEAM2].current_state = STATE_NORMAL;
 }
-
 
 int main(int argc, char * argv[])
 {

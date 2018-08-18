@@ -44,7 +44,7 @@ static void set_column_pixels(Adafruit_NeoPixel& pixels, uint8_t column, uint8_t
 	bool set;
 	for (uint8_t i=0; i<10; i++)
 	{
-		set =  column_is_odd ? (i >= n) : (i <= n);
+		set =  column_is_odd ? (i > n) : (i < n);
 		if (set)
 		{
 			pixels.setPixelColor((column*10)+i,
